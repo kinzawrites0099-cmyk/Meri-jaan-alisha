@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song & Games - Alisha ❤️</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    h1 {
+        color: white;
+        font-size: 3rem;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .music-player,
+    .games-section {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .play-btn {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #f093fb, #f5576c);
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+        transition: transform 0.3s;
+    }
+    .play-btn:hover {
+        transform: scale(1.1);
+    }
+    .song-title {
+        font-size: 1.5rem;
+        color: #333;
+        margin-top: 20px;
+    }
+    .game-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 15px 0;
+        color: white;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    .game-card:hover {
+        transform: translateY(-5px);
+    }
+    .game-title {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+    .hidden {
+        display: none;
+    }
+    .quiz-container {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+    .question {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    .option {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 1rem;
+    }
+    .option:hover {
+        background: #667eea;
+        color: white;
+    }
+    .option.correct {
+        background: #2ecc71;
+        color: white;
+    }
+    .option.wrong {
+        background: #e74c3c;
+        color: white;
+    }
+    .score {
+        font-size: 1.5rem;
+        color: #333;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+    .restart-btn {
+        margin-top: 15px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        background: #f5576c;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .nav-btns {
+        margin-top: 30px;
+    }
+    .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: white;
+        color: #f5576c;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: bold;
+        margin: 0 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transition: transform 0.3s;
+    }
+    .btn:hover {
+        transform: translateY(-3px);
+    }
+    .hearts-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+    .floating-heart {
+        position: absolute;
+        font-size: 20px;
+        animation: float 6s ease-in-out infinite;
+        opacity: 0.3;
+    }
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-30px) rotate(20deg);
+        }
+    }
+    .memory-game {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .memory-card {
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: transform 0.3s;
+        color: white;
+    }
+    .memory-card.flipped {
+        background: white;
+        color: #333;
+        transform: rotateY(180deg);
+    }
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+        .memory-game {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .btn {
+            margin: 5px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="hearts-bg">
+    <div class="floating-heart" style="top: 10%; left: 10%;">❤️</div>
+    <div class="floating-heart" style="top: 30%; right: 20%; animation-delay: 1s;">💕</div>
+    <div class="floating-heart" style="top: 60%; left: 30%; animation-delay: 2s;">💖</div>
+    <div class="floating-heart" style="top: 80%; right: 10%; animation-delay: 3s;">💗</div>
+</div>
+<div class="container">
+    <h1>🎵 Music & Games 🎮</h1>
+    <!-- MUSIC PLAYER -->
+    <div class="music-player">
+        <button class="play-btn" onclick="toggleMusic()" id="playBtn">
+            ▶️
+        </button>
+        <div class="song-title">
+            Happy Birthday Song ❤️
+        </div>
+        <p style="color:#666; margin-top:10px;">
+            Click to play the birthday song!
+        </p>
+        <!-- IMPORTANT: MP3 file same folder mein honi chahiye -->
+        <audio id="birthdaySong" loop>
+            <source src="happy-birthday.mp3" type="audio/mpeg">
+            Your browser does not support audio.
+        </audio>
+    </div>
+    <!-- GAMES -->
+    <div class="games-section">
+        <h2 style="color:#333; margin-bottom:20px;">
+            Let's Play Some Games! 🎯
+        </h2>
+        <!-- LOVE QUIZ -->
+        <div class="game-card" onclick="showQuiz()">
+            <div class="game-title">
+                💝 Love Quiz
+            </div>
+            <p>
+                Test how well you know us!
+            </p>
+        </div>
+        <div id="quizGame" class="quiz-container hidden">
+            <div class="question" id="question"></div>
+            <div id="options"></div>
+            <div class="score">
+                Score: <span id="score">0</span>/5
+            </div>
+            <button
+                class="restart-btn"
+                onclick="restartQuiz()">
+                🔄 Restart Quiz
+            </button>
+        </div>
+        <!-- MEMORY GAME -->
+        <div class="game-card" onclick="showMemory()">
+            <div class="game-title">
+                🧠 Memory Match
+            </div>
+            <p>
+                Match the hearts!
+            </p>
+        </div>
+        <div id="memoryGame" class="memory-game hidden"></div>
+    </div>
+    <!-- NAVIGATION -->
+    <div class="nav-btns">
+        <a href="index.html" class="btn">
+            ← Previous
+        </a>
+        <a href="reply.html" class="btn">
+            Next →
+        </a>
+    </div>
+</div>
+<script>
+    /* =========================
+       MUSIC PLAYER
+    ========================= */
+    const audio = document.getElementById("birthdaySong");
+    const playBtn = document.getElementById("playBtn");
+    let isPlaying = false;
+    function toggleMusic() {
+        if (audio.paused) {
+            audio.play()
+                .then(() => {
+                    isPlaying = true;
+                    playBtn.textContent = "⏸️";
+                })
+                .catch(() => {
+                    alert(
+                        "🎵 Song play nahi ho rahi.\n\n" +
+                        "Check karo ke 'happy-birthday.mp3' file " +
+                        "HTML file ke same folder mein hai."
+                    );
+                });
+        } else {
+            audio.pause();
+            isPlaying = false;
+            playBtn.textContent = "▶️";
+        }
+    }
+    /* =========================
+       LOVE QUIZ
+    ========================= */
+    const questions = [
+        {
+            q: "Alisha ka favorite color kya hai?",
+            options: ["Pink", "Purple", "Red", "Blue"],
+            correct: 0
+        },
+        {
+            q: "Rohaan ne Alisha ko pehli baar kahan dekha tha?",
+            options: ["School", "College", "Park", "Dost ki party"],
+            correct: 1
+        },
+        {
+            q: "Alisha ki favorite dish kya hai?",
+            options: ["Biryani", "Pizza", "Pasta", "Ice Cream"],
+            correct: 0
+        },
+        {
+            q: "Unki pehli date kahan thi?",
+            options: ["Cafe", "Cinema", "Park", "Restaurant"],
+            correct: 2
+        },
+        {
+            q: "Alisha ka birthday kab hai?",
+            options: ["1 January", "15 February", "20 March", "10 April"],
+            correct: 1
+        }
+    ];
+    let currentQuestion = 0;
+    let score = 0;
+    let quizAnswered = false;
+    function showQuiz() {
+        document
+            .getElementById("quizGame")
+            .classList.remove("hidden");
+        document
+            .getElementById("memoryGame")
+            .classList.add("hidden");
+        loadQuestion();
+    }
+    function loadQuestion() {
+        quizAnswered = false;
+        if (currentQuestion >= questions.length) {
+            document.getElementById("question").innerHTML =
+                "🎉 Quiz Complete! 🎉<br><br>" +
+                "Your Score: " + score + "/5 ❤️";
+            document.getElementById("options").innerHTML = "";
+            return;
+        }
+        const q = questions[currentQuestion];
+        document.getElementById("question").textContent = q.q;
+        const optionsDiv =
+            document.getElementById("options");
+        optionsDiv.innerHTML = "";
+        q.options.forEach((opt, idx) => {
+            const btn =
+                document.createElement("button");
+            btn.className = "option";
+            btn.textContent = opt;
+            btn.onclick = function () {
+                checkAnswer(idx);
+            };
+            optionsDiv.appendChild(btn);
+        });
+    }
+    function checkAnswer(selected) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+        const options =
+            document.querySelectorAll(".option");
+        const correct =
+            questions[currentQuestion].correct;
+        if (selected === correct) {
+            options[selected]
+                .classList.add("correct");
+            score++;
+            document.getElementById("score")
+                .textContent = score;
+        } else {
+            options[selected]
+                .classList.add("wrong");
+            options[correct]
+                .classList.add("correct");
+        }
+        setTimeout(() => {
+            currentQuestion++;
+            loadQuestion();
+        }, 1000);
+    }
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        document.getElementById("score")
+            .textContent = "0";
+        loadQuestion();
+    }
+    /* =========================
+       MEMORY GAME
+    ========================= */
+    const emojis = [
+        "❤️",
+        "💕",
+        "💖",
+        "💗",
+        "💝",
+        "💘"
+    ];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let memoryLocked = false;
+    function showMemory() {
+        document
+            .getElementById("memoryGame")
+            .classList.remove("hidden");
+        document
+            .getElementById("quizGame")
+            .classList.add("hidden");
+        flippedCards = [];
+        matchedPairs = 0;
+        memoryLocked = false;
+        const game =
+            document.getElementById("memoryGame");
+        game.innerHTML = "";
+        const cards =
+            [...emojis, ...emojis]
+            .sort(() => Math.random() - 0.5);
+        cards.forEach((emoji, idx) => {
+            const card =
+                document.createElement("div");
+            card.className = "memory-card";
+            card.dataset.emoji = emoji;
+            card.dataset.idx = idx;
+            card.innerHTML = "?";
+            card.onclick = flipCard;
+            game.appendChild(card);
+        });
+    }
+    function flipCard() {
+        if (memoryLocked) return;
+        if (flippedCards.length === 2) return;
+        if (this.classList.contains("flipped")) return;
+        this.classList.add("flipped");
+        this.innerHTML = this.dataset.emoji;
+        flippedCards.push(this);
+        if (flippedCards.length === 2) {
+            memoryLocked = true;
+            setTimeout(checkMatch, 600);
+        }
+    }
+    function checkMatch() {
+        const card1 = flippedCards[0];
+        const card2 = flippedCards[1];
+        if (card1.dataset.emoji === card2.dataset.emoji) {
+            matchedPairs++;
+            if (matchedPairs === emojis.length) {
+                setTimeout(() => {
+                    alert(
+                        "🎉 Congratulations! ❤️\n\n" +
+                        "You matched all hearts! 💕"
+                    );
+                }, 300);
+            }
+        } else {
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+            card1.innerHTML = "?";
+            card2.innerHTML = "?";
+        }
+        flippedCards = [];
+        memoryLocked = false;
+    }
+</script>
+</body>
+</html>
